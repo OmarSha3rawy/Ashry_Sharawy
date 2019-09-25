@@ -17,7 +17,7 @@
 #define MAX_NUM_OF_TIMERS (uint8)3
 
 uint8 TIMER_init(void);
-uint8 TIMER_delay_ms(timer_id id, uint8 val, uint8 counter);
+uint8 TIMER_delay_ms(timer_id id, uint8 val);
 uint8 TIMER_pwm(timer_id id, uint8 duty);
 uint8 TIMER_set(timer_id id, uint8 val);
 

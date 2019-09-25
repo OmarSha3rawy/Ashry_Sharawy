@@ -15,7 +15,6 @@ uint8 set_action(uint8 id, uint8 action1, uint8 action2 );
  uint8 set_interrupt(uint8 id, uint8 intr);
  uint8 set_ocr(uint8 id,uint8 val);
   uint8 volatile counter_0;
- uint8 volatile counter_1;
  uint8 volatile counter_2;
  
 
@@ -23,7 +22,7 @@ uint8 TIMER_init(void)
 {
 	uint8 state=OK;
 	uint8 loop_index=0;
-	if(num_of_timers<=MAX_NUM_OF_TIMERS)
+	if(num_of_timers<MAX_NUM_OF_TIMERS)
 	{
 		for(loop_index=0;loop_index<num_of_timers;loop_index++)
 		{
@@ -474,6 +473,7 @@ uint8 TIMER_delay_ms(timer_id id, uint8 val){
 
 	case timer0:
 	stat=Set_mode(id,NORMAL_MOOD);
+	stat=set_interrupt(id,INTERRUPT_EN);
 	if(timer_confg_list[id].clock==CLOCK_1MHZ){
 	stat=set_pre(id,PRE_1);
 	TCNT0=6;
@@ -485,12 +485,10 @@ uint8 TIMER_delay_ms(timer_id id, uint8 val){
 	 while(counter_0!=val*4);
 	 counter_0=0;
 	break;
-	case timer1:
-	  while(counter_1!=val*4)
-	  counter_1=0;
-	break;
+	
 	case timer2:
 	stat=Set_mode(id,NORMAL_MOOD);
+	stat=set_interrupt(id,INTERRUPT_EN);
 	if(timer_confg_list[id].clock==CLOCK_1MHZ){
 		stat=set_pre(id,PRE_1);
 		TCNT2=6;
