@@ -217,27 +217,27 @@ return state;
 			TCCR2|=(1<<CS21);
 			TCCR2&=~(1<<CS22);
 			break;
-			case PRE_64:
+			case PRE_32:
 			TCCR2|=(1<<CS20);
 			TCCR2|=(1<<CS21);
 			TCCR2&=~(1<<CS22);
 			break;
-			case PRE_256:
+			case PRE_64:
 			TCCR2&=~(1<<CS20);
 			TCCR2&=~(1<<CS21);
 			TCCR2|=(1<<CS22);
 			break;
-			case PRE_1024:
+			case PRE_128:
 			TCCR2|=(1<<CS20);
 			TCCR2&=~(1<<CS21);
 			TCCR2|=(1<<CS22);
 			break;
-			case EXTERN_RISING:
+			case PRE_1024:
 			TCCR2&=~(1<<CS20);
 			TCCR2|=(1<<CS21);
 			TCCR2|=(1<<CS22);
 			break;
-			case  EXTERN_FALLING:
+			case  PRE_256:
 			TCCR2|=(1<<CS20);
 			TCCR2|=(1<<CS21);
 			TCCR2|=(1<<CS22);
