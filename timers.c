@@ -14,6 +14,10 @@ uint8 set_action(uint8 id, uint8 action1, uint8 action2 );
  uint8 set_clock(uint8 id);
  uint8 set_interrupt(uint8 id, uint8 intr);
  uint8 set_ocr(uint8 id,uint8 val);
+  uint8 volatile counter_0;
+ uint8 volatile counter_1;
+ uint8 volatile counter_2;
+ 
 
 uint8 TIMER_init(void)
 {
@@ -217,27 +221,27 @@ return state;
 			TCCR2|=(1<<CS21);
 			TCCR2&=~(1<<CS22);
 			break;
-			case PRE_32:
+			case PRE_64:
 			TCCR2|=(1<<CS20);
 			TCCR2|=(1<<CS21);
 			TCCR2&=~(1<<CS22);
 			break;
-			case PRE_64:
+			case PRE_256:
 			TCCR2&=~(1<<CS20);
-			TCCR2&=~(1<<CS21);
-			TCCR2|=(1<<CS22);
-			break;
-			case PRE_128:
-			TCCR2|=(1<<CS20);
 			TCCR2&=~(1<<CS21);
 			TCCR2|=(1<<CS22);
 			break;
 			case PRE_1024:
+			TCCR2|=(1<<CS20);
+			TCCR2&=~(1<<CS21);
+			TCCR2|=(1<<CS22);
+			break;
+			case EXTERN_RISING:
 			TCCR2&=~(1<<CS20);
 			TCCR2|=(1<<CS21);
 			TCCR2|=(1<<CS22);
 			break;
-			case  PRE_256:
+			case  EXTERN_FALLING:
 			TCCR2|=(1<<CS20);
 			TCCR2|=(1<<CS21);
 			TCCR2|=(1<<CS22);
@@ -463,19 +467,46 @@ return stat;
 	return stat;
 }
 
-uint8 TIMER_delay_ms(timer_id id, uint8 val,uint8 counter)
-{  uint8 stat;
+uint8 TIMER_delay_ms(timer_id id, uint8 val){
+	  uint8 stat=OK;
+	
 	 switch(id){
 
 	case timer0:
+	stat=Set_mode(id,NORMAL_MOOD);
 	if(timer_confg_list[id].clock==CLOCK_1MHZ){
 	stat=set_pre(id,PRE_1);
+	TCNT0=6;
 	}
+	else if(timer_confg_list[id].clock==CLOCK_8MHZ){
+		stat=set_pre(id,PRE_8);
+		TCNT0=6;
+	}
+	 while(counter_0!=val*4);
+	 counter_0=0;
 	break;
-
+	case timer1:
+	  while(counter_1!=val*4)
+	  counter_1=0;
+	break;
+	case timer2:
+	stat=Set_mode(id,NORMAL_MOOD);
+	if(timer_confg_list[id].clock==CLOCK_1MHZ){
+		stat=set_pre(id,PRE_1);
+		TCNT2=6;
+	}
+	else if(timer_confg_list[id].clock==CLOCK_8MHZ){
+		stat=set_pre(id,PRE_8);
+		TCNT2=6;
+	}
+	   while(counter_2!=val*4)
+	   counter_2=0;
+     break;
 	 }
+	 
 	 return stat;
 }
+
 
 
 
@@ -493,6 +524,13 @@ uint8 TIMER_pwm(timer_id id, uint8 duty)
 
 uint8 TIMER_set(timer_id id, uint8 val)
 {
+	
+}
+ISR(TIMER0_OVF_vect){
+	counter_0++;
+}
+ISR(TIMER2_OVF_vect){
+counter_2++;
 	
 }
 
