@@ -45,6 +45,25 @@
 #define INTERRUPT_EN 1
 #define INTERRUPT_DIS 0
 
+typedef enum{
+	NORMAL,
+	PHASE_CORRECT_8,
+	PHASE_CORRECT_9,
+	PHASE_CORRECT_10,
+	CTC_OC,
+	FAST_PWM_8,
+	FAST_PWM_9,
+	FAST_PWM_10,
+	PHASE_FREQ_CORRECT_ICR,
+	PHASE_FREQ_CORRECT_OC,
+	PHASE_CORRECT_ICR,
+	PHASE_CORRECT_OC,
+	CTC_ICR,
+	FAST_PWM_ICR = 14,
+	FAST_PWM_OC = 15,
+	num_of_modes}timer1_modes;
+
+
 typedef enum{timer0,timer1,timer2,num_of_timers}timer_id;
 typedef struct
 {

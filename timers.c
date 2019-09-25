@@ -83,6 +83,8 @@ return state;
 		break;
 		
 		case timer1:
+			TCCR1A |= (mode & 0x03);
+			TCCR1B |= ((mode << 1) & 0x18);
 		break;
 		
 		case timer2:
@@ -168,7 +170,7 @@ return state;
 		}
 	}
 	else if(id==timer1){
-		
+		TCCR1B |= (pre & 0x07) ;
 	}
 	else if(id==timer2){
 		switch(pre){
@@ -272,6 +274,7 @@ return state;
 		}
 	}
 	else if(id==timer1){
+		TCCR1A = ;
 		
 	}
 	else if(id==timer2){
