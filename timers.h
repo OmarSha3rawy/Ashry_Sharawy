@@ -8,10 +8,11 @@
 
 #ifndef TIMERS_H_
 #define TIMERS_H_
-#define OK  1
-#define NOK 0
+/*#define OK  1
+#define NOK 0*/
 
 #include "timers_configuration.h"
+#include "DIO.h"
 
 #define MAX_NUM_OF_TIMERS (uint8)3
 

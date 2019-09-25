@@ -6,10 +6,11 @@
  */ 
 
 #include "timers.h"
+#include <util/delay.h>
 #include <avr/interrupt.h>
  uint8 Set_mode( uint8 id, uint8 mode);
  uint8  set_pre( uint8 id, uint8 pre);
- uint8 set_action(uint8 id, uint8 action);
+uint8 set_action(uint8 id, uint8 action1, uint8 action2 );
  uint8 set_clock(uint8 id);
  uint8 set_interrupt(uint8 id, uint8 intr);
  uint8 set_ocr(uint8 id,uint8 val);
@@ -20,24 +21,29 @@ uint8 TIMER_init(void)
 	uint8 loop_index=0;
 	if(num_of_timers<=MAX_NUM_OF_TIMERS)
 	{
-		for(loop_index=0;loop_index<=num_of_timers;loop_index++)
+		for(loop_index=0;loop_index<num_of_timers;loop_index++)
 		{
 
 			state=Set_mode(loop_index, timer_confg_list[loop_index].mood);
 			if (state==NOK)
-			timer_confg_list[loop_index].state=NOT_INITIALIZED;
+				timer_confg_list[loop_index].state=NOT_INITIALIZED;
+			
 			state=set_pre(loop_index,timer_confg_list[loop_index].prescale);
 				if (state==NOK)
 				timer_confg_list[loop_index].state=NOT_INITIALIZED;
-			state=set_action(loop_index,timer_confg_list[loop_index].action);	
+				
+			state=set_action(loop_index,timer_confg_list[loop_index].action1, timer_confg_list[loop_index].action2);	
 			if (state==NOK)
-			timer_confg_list[loop_index].state=NOT_INITIALIZED;
+				timer_confg_list[loop_index].state=NOT_INITIALIZED;
+			
 			state=set_clock(loop_index);
 			if (state==NOK)
-			timer_confg_list[loop_index].state=NOT_INITIALIZED;
+				timer_confg_list[loop_index].state=NOT_INITIALIZED;
+			
 			state=set_interrupt(loop_index,timer_confg_list[loop_index].interrupt);
 			if (state==NOK)
-			timer_confg_list[loop_index].state=NOT_INITIALIZED;
+				timer_confg_list[loop_index].state=NOT_INITIALIZED;
+			
 			state=set_ocr(loop_index,timer_confg_list[loop_index].compare_value);
 			if (state==NOK)
 				timer_confg_list[loop_index].state=NOT_INITIALIZED;
@@ -83,8 +89,23 @@ return state;
 		break;
 		
 		case timer1:
-			TCCR1A |= (mode & 0x03);
-			TCCR1B |= ((mode << 1) & 0x18);
+			if(mode < 16)
+			{
+				TCCR1A |= (mode & 0x03);
+				TCCR1B |= ((mode << 1) & 0x18);
+				if (mode == NORMAL || mode == CTC_OC || mode == CTC_ICR)
+				{
+					TCCR1A |= ((1<<FOC1A) | (1<<FOC1B));
+				}
+				else
+				{
+					TCCR1A &= ~((1<<FOC1A) | (1<<FOC1B));
+				}
+			}
+			else
+			{
+				stat=NOK;
+			}
 		break;
 		
 		case timer2:
@@ -170,7 +191,14 @@ return state;
 		}
 	}
 	else if(id==timer1){
-		TCCR1B |= (pre & 0x07) ;
+		if ( (pre >= 0) & (pre < 8)) //bad coding (replace in the first of function)
+		{
+			TCCR1B |= (pre & 0x07) ;
+		}
+		else
+		{
+			stat=NOK;		
+		}
 	}
 	else if(id==timer2){
 		switch(pre){
@@ -225,11 +253,11 @@ return state;
 	return stat;
 }
 
- uint8 set_action(uint8 id, uint8 action){
+ uint8 set_action(uint8 id, uint8 action1, uint8 action2 ){
 	uint8 stat=OK;
 	if(id==timer0){
 		if((timer_confg_list[id].mood==CTC)||(timer_confg_list[id].mood==NORMAL_MOOD)){
-			switch(action){
+			switch(action1){
 				case NO_ACTION:
 				TCCR0&=~(1<<COM00);
 				TCCR0&=~(1<<COM01);
@@ -253,7 +281,7 @@ return state;
 		}
 		else if((timer_confg_list[id].mood==FAST_PWM)||(timer_confg_list[id].mood==PHASE_CORRECT)){
                
-			   switch(action){
+			   switch(action1){
 				   
 				 case INVERTING:
 				 TCCR0|=(1<<COM00);
@@ -274,12 +302,19 @@ return state;
 		}
 	}
 	else if(id==timer1){
-		TCCR1A = ;
-		
+		if (( (action1 >= 0) & (action1 < 4)) & ((action2 >= 0) & (action2 < 4)))
+		{
+			TCCR1A |= (action1 << COM1A0);
+			TCCR1A |= (action2 << COM1B0);
+		}
+		else
+		{
+			stat=NOK;	
+		}	
 	}
 	else if(id==timer2){
 		if((timer_confg_list[id].mood==CTC)||(timer_confg_list[id].mood==NORMAL_MOOD)){
-			switch(action){
+			switch(action1){
 				case NO_ACTION:
 				TCCR2&=~(1<<COM20);
 				TCCR2&=~(1<<COM21);
@@ -303,7 +338,7 @@ return state;
 		}
 		else if((timer_confg_list[id].mood==FAST_PWM)||(timer_confg_list[id].mood==PHASE_CORRECT)){
 			
-			switch(action){
+			switch(action1){
 				
 				case INVERTING:
 				TCCR2|=(1<<COM20);
@@ -360,7 +395,20 @@ return state;
 		stat=NOK;
 	}
 	break;
-	case timer1:
+	case timer1: // fe bug 3arsa hna | OCA AND OCB ACTIVATED 3AFYA | ICU NOT HANDLED 
+		switch(timer_confg_list[id].mood)
+		{
+			case NORMAL: 
+				TIMSK |= (1<<TOIE1);
+			break;
+			case CTC_OC:
+				TIMSK |= (1<<OCIE1A);
+				TIMSK |= (1<<OCIE1B);
+			break;
+			default: 
+				TIMSK |= (1<<TOIE1);
+			break;
+		}
 	break;
 	case timer2:
 	if (timer_confg_list[id].mood==NORMAL_MOOD)
@@ -393,6 +441,9 @@ return stat;
 	}
 	break;
 	case timer1:
+		OCR1A = timer_confg_list[id].compare_value16_A ;
+		OCR1B = timer_confg_list[id].compare_value16_B ;
+
 	break;
 	case timer2:
 	if(val<255){
@@ -444,3 +495,4 @@ uint8 TIMER_set(timer_id id, uint8 val)
 {
 	
 }
+

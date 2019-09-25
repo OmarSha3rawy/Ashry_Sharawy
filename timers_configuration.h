@@ -22,13 +22,29 @@
 #define FAST_PWM 2
 #define PHASE_CORRECT 3
 
-#define NO_ACTION 0
+/* #define NO_ACTION 0
 #define TOGGLE 1
 #define SET_ON 2
 #define CLEAR_ON 3
 #define INVERTING 4
-#define NON_INVERTING 5
+#define NON_INVERTING 5 */
 
+typedef enum{
+	NO_ACTION = 0,
+	TOGGLE = 1,
+	CLEAR_ON = 2,
+	SET_ON = 3,
+	
+	TOGGLE_OC1A = 1,
+	NON_INVERTING = 2,
+	INVERTING = 3,
+	
+	CLEAR_ON_UP = 2,
+	SET_ON_UP = 3}timers_actions;
+
+typedef enum{
+	ON = 1,
+	OFF = 0}Timer1_Noise;
 
 #define CLOCK_1MHZ 0
 #define CLOCK_8MHZ 0
@@ -69,8 +85,11 @@ typedef struct
 {
 	uint8 state;
 	uint8 mood;
-	uint8 action;
+	uint8 action1;
+	uint8 action2;
 	uint8 compare_value;
+	uint16 compare_value16_A;
+	uint16 compare_value16_B;
 	uint8 prescale;
 	uint8 clock;
 	uint8 interrupt;
