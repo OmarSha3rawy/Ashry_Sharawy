@@ -506,24 +506,41 @@ uint8 TIMER_delay_ms(timer_id id, uint8 val){
 }
 
 
-
-
-
-                   
-
-
-	
-
-
 uint8 TIMER_pwm(timer_id id, uint8 duty)
 {
+	uint8 stat=OK;
+	uint16 val=0;
+	if((duty>=0)&&(duty<=100)){
+	switch(duty){
+	case timer0:
+	stat=Set_mode(id,FAST_PWM);
+	stat=set_action(id,NON_INVERTING,NON_INVERTING);
+	val=(duty*255)/100;
+	OCR0=val;
+	break;
+	case timer1:
+	stat=Set_mode(id,FAST_PWM_OC);
+	stat=set_action(id,NON_INVERTING,NON_INVERTING);
+	val=(duty*65536)/100;
+	OCR1A=val;
+	break;
 	
-}
+	case timer2:
+	stat=Set_mode(id,FAST_PWM);
+	stat=set_action(id,NON_INVERTING,NON_INVERTING);
+	val=(duty*255)/100;
+	OCR2=val;
 
-uint8 TIMER_set(timer_id id, uint8 val)
-{
+	break;
+	}
+	}
+	else{
+		stat=NOK;
+	}
+return stat;
 	
-}
+	}
+
 ISR(TIMER0_OVF_vect){
 	counter_0++;
 }
