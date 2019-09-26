@@ -501,6 +501,9 @@ uint8 TIMER_delay_ms(timer_id id, uint32 val){
 	   while(counter_2!=val*4)
 	   counter_2=0;
      break;
+	 default:
+	 stat=NOK;
+	 break;
 	 }
 	 
 	 return stat;
@@ -512,29 +515,33 @@ uint8 TIMER_pwm(timer_id id, uint8 duty)
 	uint8 stat=OK;
 	uint16 val=0;
 	if((duty>=0)&&(duty<=100)){
-	switch(duty){
-	case timer0:
-	stat=Set_mode(id,FAST_PWM);
-	stat=set_action(id,NON_INVERTING,NON_INVERTING);
-	val=(duty*255)/100;
-	OCR0=val;
-	break;
-	case timer1:
-	stat=Set_mode(id,FAST_PWM_OC);
-	stat=set_action(id,NON_INVERTING,NON_INVERTING);
-	val=(duty*65536)/100;
-	OCR1A=val;
-	break;
+		
+		switch(duty){
+		case timer0:
+			stat=Set_mode(id,FAST_PWM);
+			stat=set_action(id,NON_INVERTING,NON_INVERTING);
+			val=(duty*255)/100;
+			OCR0=val;
+		break;
+		case timer1:
+			stat=Set_mode(id,FAST_PWM_OC);
+			stat=set_action(id,NON_INVERTING,NON_INVERTING);
+			val=(duty*65536)/100;
+			OCR1A=val;
+		break;
 	
-	case timer2:
-	stat=Set_mode(id,FAST_PWM);
-	stat=set_action(id,NON_INVERTING,NON_INVERTING);
-	val=(duty*255)/100;
-	OCR2=val;
+		case timer2:
+			stat=Set_mode(id,FAST_PWM);
+			stat=set_action(id,NON_INVERTING,NON_INVERTING);
+			val=(duty*255)/100;
+			OCR2=val;
+		break;
+		default:
+			stat=NOK;
+		break;
+	}
+	}
 
-	break;
-	}
-	}
 	else{
 		stat=NOK;
 	}
@@ -542,31 +549,31 @@ return stat;
 	
 	}
 	void Start_Timer(uint8 id){
-		uint8 stat=OK;
+		
 		switch(id){
 			case timer0:
-			stat=set_interrupt(id,INTERRUPT_EN);
+			 set_interrupt(id,INTERRUPT_EN);
 			TCNT0=0;
 			case timer1:
-				stat=set_interrupt(id,INTERRUPT_EN);
+		     set_interrupt(id,INTERRUPT_EN);
 				TCNT1=0;
 			case timer2:
-			stat=set_interrupt(id,INTERRUPT_EN);
+		   	 set_interrupt(id,INTERRUPT_EN);
 			TCNT2=0;
 			break;	
 		}
 	}
 	void Stop_timer(uint8 id){
-			uint8 stat=OK;
+			
 			switch(id){
 				case timer0:
-				stat=set_interrupt(id,INTERRUPT_DIS);
+				set_interrupt(id,INTERRUPT_DIS);
 				TCNT0=0;
 				case timer1:
-				stat=set_interrupt(id,INTERRUPT_DIS);
+				set_interrupt(id,INTERRUPT_DIS);
 				TCNT1=0;
 				case timer2:
-				stat=set_interrupt(id,INTERRUPT_DIS);
+				set_interrupt(id,INTERRUPT_DIS);
 				TCNT2=0;
 				break;
 			}
