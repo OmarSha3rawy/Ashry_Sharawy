@@ -263,77 +263,35 @@ func_state DIO_write(pintype device, uint8 value)
 	return state;
 }
 
-func_state DIO_read (uint8 port,uint8 pin,uint8 * Pval)
-{
-	func_state retval = OK;
-	uint8 loop_index ;
-	for (loop_index = 0; loop_index <NUM_OF_PINS ;loop_index++)
-	{
-		if ((DIO_cnfig_list[loop_index].PORT == port)&&(DIO_cnfig_list[loop_index].PIN == pin))
-		{
-			if((DIO_cnfig_list[loop_index].IS_initialized == INITIALIZED)&&(DIO_cnfig_list[loop_index].DIR == INPUT))
-			{
-				switch (port)
-				{
-					case PORT_A:
-					*Pval = (1u&(PINA>>pin));
-					break;
-					case PORT_B:
-					*Pval = (1u&(PINB>>pin));
-					break;
-					case PORT_C:
-					*Pval = (1u&(PINC>>pin));
-					break;
-					case PORT_D:
-					*Pval = (1u&(PIND>>pin));
-					break;
-				}
-				loop_index = (uint8)MAX_NUM_OF_PINS+1;
-			}
-			else
-			{
-				retval = NOK;
-			}
-		}
-		else
-		{
-			retval = OK;
-		}
-	}
-	return retval;
-}
 
-/*
-func_state DIO_read(uint8* result, pintype device)
+func_state DIO_read(pintype device, uint8* result)
 {
-	func_state state;
-	if(DIO_cnfig_list[device].IS_initialized == INITIALIZED && DIO_cnfig_list[device].DIR == INPUT)
+	func_state state = OK;
+	if (DIO_cnfig_list[device].IS_initialized == INITIALIZED)
 	{
 		switch(DIO_cnfig_list[device].PORT)
 		{
 			case PORT_A:
-			*result = (uint8)(1u &(PORTA >> DIO_cnfig_list[device].PIN));
+			*result = (1u & (PINA >> DIO_cnfig_list[device].PIN));
 			break;
-			
+
 			case PORT_B:
-			*result = (uint8)(1u &(PORTB >> DIO_cnfig_list[device].PIN));
+			*result = (1u & (PINB >> DIO_cnfig_list[device].PIN));
 			break;
 			
 			case PORT_C:
-			*result = (uint8)(1u &(PORTC >> DIO_cnfig_list[device].PIN));
+			*result = (1u & (PINC >> DIO_cnfig_list[device].PIN));
 			break;
 			
 			case PORT_D:
-			*result = (uint8)(1u &(PORTD >> DIO_cnfig_list[device].PIN));
+			*result = (1u & (PIND >> DIO_cnfig_list[device].PIN));
 			break;
 		}
-		state = OK;
 	}
 	else
 	{
 		state = NOK;
+		*result = 0x00;			
 	}
 	return state;
 }
-
-*/

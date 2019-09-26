@@ -6,7 +6,6 @@
  */ 
 
 #include "timers.h"
-#include <util/delay.h>
 #include <avr/interrupt.h>
  uint8 Set_mode( uint8 id, uint8 mode);
  uint8  set_pre( uint8 id, uint8 pre);
@@ -14,8 +13,8 @@ uint8 set_action(uint8 id, uint8 action1, uint8 action2 );
  uint8 set_clock(uint8 id);
  uint8 set_interrupt(uint8 id, uint8 intr);
  uint8 set_ocr(uint8 id,uint8 val);
-  uint8 volatile counter_0;
- uint8 volatile counter_2;
+ uint32 volatile counter_0;
+ uint32 volatile counter_2;
  
 
 uint8 TIMER_init(void)
@@ -464,9 +463,10 @@ return stat;
 	
 	}
 	return stat;
+	
 }
 
-uint8 TIMER_delay_ms(timer_id id, uint8 val){
+uint8 TIMER_delay_ms(timer_id id, uint32 val){
 	  uint8 stat=OK;
 	
 	 switch(id){
@@ -500,6 +500,9 @@ uint8 TIMER_delay_ms(timer_id id, uint8 val){
 	   while(counter_2!=val*4)
 	   counter_2=0;
      break;
+	 default:
+	 break;
+
 	 }
 	 
 	 return stat;
@@ -541,31 +544,31 @@ return stat;
 	
 	}
 	void Start_Timer(uint8 id){
-		uint8 stat=OK;
+		//uint8 stat=OK;
 		switch(id){
 			case timer0:
-			stat=set_interrupt(id,INTERRUPT_EN);
+			set_interrupt(id,INTERRUPT_EN);
 			TCNT0=0;
 			case timer1:
-				stat=set_interrupt(id,INTERRUPT_EN);
+				set_interrupt(id,INTERRUPT_EN);
 				TCNT1=0;
 			case timer2:
-			stat=set_interrupt(id,INTERRUPT_EN);
+			set_interrupt(id,INTERRUPT_EN);
 			TCNT2=0;
 			break;	
 		}
 	}
 	void Stop_timer(uint8 id){
-			uint8 stat=OK;
+			//uint8 stat=OK;
 			switch(id){
 				case timer0:
-				stat=set_interrupt(id,INTERRUPT_DIS);
+				set_interrupt(id,INTERRUPT_DIS);
 				TCNT0=0;
 				case timer1:
-				stat=set_interrupt(id,INTERRUPT_DIS);
+				set_interrupt(id,INTERRUPT_DIS);
 				TCNT1=0;
 				case timer2:
-				stat=set_interrupt(id,INTERRUPT_DIS);
+				set_interrupt(id,INTERRUPT_DIS);
 				TCNT2=0;
 				break;
 			}
