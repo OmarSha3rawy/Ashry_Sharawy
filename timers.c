@@ -220,27 +220,27 @@ return state;
 			TCCR2|=(1<<CS21);
 			TCCR2&=~(1<<CS22);
 			break;
-			case PRE_64:
+			case PRE_32:
 			TCCR2|=(1<<CS20);
 			TCCR2|=(1<<CS21);
 			TCCR2&=~(1<<CS22);
 			break;
-			case PRE_256:
+			case PRE_64:
 			TCCR2&=~(1<<CS20);
 			TCCR2&=~(1<<CS21);
 			TCCR2|=(1<<CS22);
 			break;
-			case PRE_1024:
+			case PRE_128:
 			TCCR2|=(1<<CS20);
 			TCCR2&=~(1<<CS21);
 			TCCR2|=(1<<CS22);
 			break;
-			case EXTERN_RISING:
+			case PRE_256:
 			TCCR2&=~(1<<CS20);
 			TCCR2|=(1<<CS21);
 			TCCR2|=(1<<CS22);
 			break;
-			case  EXTERN_FALLING:
+			case  PRE_1024:
 			TCCR2|=(1<<CS20);
 			TCCR2|=(1<<CS21);
 			TCCR2|=(1<<CS22);
@@ -398,7 +398,7 @@ return state;
 		stat=NOK;
 	}
 	break;
-	case timer1: // fe bug 3arsa hna | OCA AND OCB ACTIVATED 3AFYA | ICU NOT HANDLED 
+	case timer1: 
 		switch(timer_confg_list[id].mood)
 		{
 			case NORMAL: 
@@ -516,25 +516,31 @@ uint8 TIMER_pwm(timer_id id, uint8 duty)
 	uint16 val=0;
 	if((duty>=0)&&(duty<=100)){
 		
-		switch(duty){
+		switch(id){
 		case timer0:
+		    stat=set_pre(id,PRE_STOPPED);
 			stat=Set_mode(id,FAST_PWM);
 			stat=set_action(id,NON_INVERTING,NON_INVERTING);
 			val=(duty*255)/100;
 			OCR0=val;
+			 stat=set_pre(id,timer_confg_list[id].prescale);
 		break;
 		case timer1:
+		stat=set_pre(id,PRE_STOPPED);
 			stat=Set_mode(id,FAST_PWM_OC);
 			stat=set_action(id,NON_INVERTING,NON_INVERTING);
 			val=(duty*65536)/100;
 			OCR1A=val;
+			 stat=set_pre(id,timer_confg_list[id].prescale);
 		break;
 	
 		case timer2:
+		stat=set_pre(id,PRE_STOPPED);
 			stat=Set_mode(id,FAST_PWM);
 			stat=set_action(id,NON_INVERTING,NON_INVERTING);
 			val=(duty*255)/100;
 			OCR2=val;
+			 stat=set_pre(id,timer_confg_list[id].prescale);
 		break;
 		default:
 			stat=NOK;

@@ -57,6 +57,8 @@ typedef enum{
 #define PRE_1024 5
 #define EXTERN_RISING 6
 #define EXTERN_FALLING 7
+#define  PRE_32 8
+#define   PRE_128 9
 
 #define INTERRUPT_EN 1
 #define INTERRUPT_DIS 0
