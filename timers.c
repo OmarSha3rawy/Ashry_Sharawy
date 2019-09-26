@@ -540,6 +540,38 @@ uint8 TIMER_pwm(timer_id id, uint8 duty)
 return stat;
 	
 	}
+	void Start_Timer(uint8 id){
+		uint8 stat=OK;
+		switch(id){
+			case timer0:
+			stat=set_interrupt(id,INTERRUPT_EN);
+			TCNT0=0;
+			case timer1:
+				stat=set_interrupt(id,INTERRUPT_EN);
+				TCNT1=0;
+			case timer2:
+			stat=set_interrupt(id,INTERRUPT_EN);
+			TCNT2=0;
+			break;	
+		}
+	}
+	void Stop_timer(uint8 id){
+			uint8 stat=OK;
+			switch(id){
+				case timer0:
+				stat=set_interrupt(id,INTERRUPT_DIS);
+				TCNT0=0;
+				case timer1:
+				stat=set_interrupt(id,INTERRUPT_DIS);
+				TCNT1=0;
+				case timer2:
+				stat=set_interrupt(id,INTERRUPT_DIS);
+				TCNT2=0;
+				break;
+			}
+		
+		
+	}
 
 ISR(TIMER0_OVF_vect){
 	counter_0++;
