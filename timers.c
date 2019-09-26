@@ -14,8 +14,8 @@ uint8 set_action(uint8 id, uint8 action1, uint8 action2 );
  uint8 set_clock(uint8 id);
  uint8 set_interrupt(uint8 id, uint8 intr);
  uint8 set_ocr(uint8 id,uint8 val);
-  uint8 volatile counter_0;
- uint8 volatile counter_2;
+  uint32 volatile counter_0;
+ uint32 volatile counter_2;
  
 
 uint8 TIMER_init(void)
@@ -466,7 +466,7 @@ return stat;
 	return stat;
 }
 
-uint8 TIMER_delay_ms(timer_id id, uint8 val){
+uint8 TIMER_delay_ms(timer_id id, uint32 val){
 	  uint8 stat=OK;
 	
 	 switch(id){
@@ -485,7 +485,8 @@ uint8 TIMER_delay_ms(timer_id id, uint8 val){
 	 while(counter_0!=val*4);
 	 counter_0=0;
 	break;
-	
+	case timer1:
+	break;
 	case timer2:
 	stat=Set_mode(id,NORMAL_MOOD);
 	stat=set_interrupt(id,INTERRUPT_EN);
