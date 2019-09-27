@@ -25,7 +25,7 @@
  *  returns: error flag in case of unacceptaple configuration
  */
 uint8 TIMER_init(void);
-<<<<<<< HEAD
+
 
 /*
  * Function:  TIMER_delay_ms
@@ -51,7 +51,6 @@ uint8 TIMER_delay_ms(timer_id id, uint32 val);
  */
 =======
 uint8 TIMER_delay_ms(timer_id id, uint32 val);
->>>>>>> 756217b74de7aeaa60ee28e21d0f7ab9df2e41c2
 uint8 TIMER_pwm(timer_id id, uint8 duty);
 
 
