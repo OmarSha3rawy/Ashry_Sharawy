@@ -2,11 +2,8 @@
  * DIO_configuration.h
  *
  * Created: 9/20/2019 3:42:53 PM
- *  Author: Ashry & sha3rawy
-  * content: the DIO driver configuration
+ *  Author: omara
  */ 
-
-
 
 
 #ifndef DIO_CONFIGURATION_H_
