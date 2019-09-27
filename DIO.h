@@ -17,6 +17,7 @@
 
 typedef enum{NOK,OK}func_state;
 
+
 func_state DIO_init();
 func_state DIO_read(pintype device, uint8* result);
 //func_state DIO_read (uint8 port,uint8 pin,uint8 * Pval);

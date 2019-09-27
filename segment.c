@@ -7,6 +7,7 @@
 
 #include "segment.h"
 
+
 func_state SEG_Write(uint8 num)
 {
 	func_state state = OK; 
