@@ -6,7 +6,6 @@
  */ 
 
 #include "timers.h"
-#include <util/delay.h>
 #include <avr/interrupt.h>
  uint8 Set_mode( uint8 id, uint8 mode);
  uint8  set_pre( uint8 id, uint8 pre);
@@ -382,10 +381,10 @@ return state;
 
  uint8 set_interrupt(uint8 id, uint8 intr){
 	uint8 stat=OK;
+	sei();
 	switch(id){
 		case timer0:
 		if(intr==INTERRUPT_EN){
-			sei();
 	if (timer_confg_list[id].mood==NORMAL_MOOD)
 	{ TIMSK|=(1<<TOIE0);
 		TIMSK&=~(1<<OCIE0);

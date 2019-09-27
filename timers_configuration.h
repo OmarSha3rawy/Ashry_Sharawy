@@ -2,7 +2,8 @@
  * timers_configuration.h
  *
  * Created: 9/21/2019 6:52:19 PM
- *  Author: omara
+ * Author: Ashry & omar
+ * content: the linking configuration of the ATmega32 timer driver
  */ 
 
 
@@ -82,7 +83,8 @@ typedef enum{
 	num_of_modes}timer1_modes;
 
 
-typedef enum{timer0,timer1,timer2,num_of_timers}timer_id;
+
+typedef enum{timer0, timer1, timer2, num_of_timers}timer_id;
 typedef struct
 {
 	uint8 state;
